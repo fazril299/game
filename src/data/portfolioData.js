@@ -152,7 +152,7 @@ export const PORTFOLIO_DATA = {
       readTime: "5 menit baca",
       author: "Gabriel",
       date: "Edisi Khusus Tanah Jawa",
-      heroImage: "https://framerusercontent.com/images/YJ33gA5Q5BJOXQu9i7oqzRb3fY.jpg",
+      heroImage: "/images/keraton-pendopo.jpg",
       leadParagraph: "Ketika Sri Sultan Hamengkubuwono I meletakkan batu pertama berdirinya Kasultanan Ngayogyakarta Hadiningrat pada tahun 1755, beliau tidak sekadar mendirikan pusat pemerintahan kota. Beliau menggambar poros spiritual yang menghubungkan unsur api, kehidupan manusia, dan samudra tak berujung.",
       sections: [
         {
@@ -182,11 +182,11 @@ export const PORTFOLIO_DATA = {
       ],
       photoGallery: [
         {
-          url: "https://framerusercontent.com/images/YJ33gA5Q5BJOXQu9i7oqzRb3fY.jpg",
+          url: "/images/keraton-pendopo.jpg",
           caption: "Keseimbangan gerak lambat penari Bedhaya di pelataran Bangsal Kencana Keraton."
         },
         {
-          url: "https://framerusercontent.com/images/GwPZ4qfuqEh19h3avjqp5ETMxWU.jpg",
+          url: "/images/tamansari-watercastle.jpg",
           caption: "Bukaan cahaya alami menerobos kisi-kisi kayu jati pendopo tradisional."
         }
       ],
@@ -204,7 +204,7 @@ export const PORTFOLIO_DATA = {
       readTime: "6 menit baca",
       author: "Gabriel",
       date: "Edisi Eksplorasi Arkeologi",
-      heroImage: "https://framerusercontent.com/images/ozQUWjd8GfZxyK5qism4xDA0.jpg",
+      heroImage: "/images/prambanan-temple.jpg",
       leadParagraph: "Menjulang tegak menembus awan di perbatasan Sleman dan Klaten, kompleks Candi Prambanan berdiri sebagai persembahan agung Wangsa Sanjaya kepada Trimurti: Brahma sang Pencipta, Wisnu sang Pemelihara, dan Siwa sang Pelebur.",
       sections: [
         {
@@ -234,15 +234,15 @@ export const PORTFOLIO_DATA = {
       ],
       photoGallery: [
         {
-          url: "https://framerusercontent.com/images/ozQUWjd8GfZxyK5qism4xDA0.jpg",
+          url: "/images/prambanan-temple.jpg",
           caption: "Siluet Shikhara Candi Siwa menjulang di atas kabut fajar Prambanan."
         },
         {
-          url: "https://framerusercontent.com/images/9nMQuapemBnNCEAL159FJ4mD0.jpg",
+          url: "/images/breksi-cliff.jpg",
           caption: "Detail kuncian batu andesit purba dan pahatan relief Kalpataru."
         },
         {
-          url: "https://framerusercontent.com/images/YwplVAHOAPo5wGhRZGop2KTyA.jpg",
+          url: "/images/kotagede-silver.jpg",
           caption: "Kilau cahaya temaram menyinari arca pelindung di relung candi."
         }
       ],
@@ -260,7 +260,7 @@ export const PORTFOLIO_DATA = {
       readTime: "5 menit baca",
       author: "Gabriel",
       date: "Edisi Arkeologi Istana Mataram",
-      heroImage: "https://framerusercontent.com/images/KropwPstz21xFU5W3XKqjXuJdug.jpg",
+      heroImage: "/images/ratuboko-sunset.jpg",
       leadParagraph: "Berbeda dengan Borobudur dan Prambanan yang merupakan bangunan keagamaan murni, Situs Ratu Boko adalah bekas kompleks istana kerajaan terlengkap dari abad ke-8. Terletak di atas perbukitan kapur selatan Prambanan, tempat ini memadukan fungsi benteng militer, tempat tinggal bangsawan, dan oase meditasi spiritual.",
       sections: [
         {
@@ -290,11 +290,11 @@ export const PORTFOLIO_DATA = {
       ],
       photoGallery: [
         {
-          url: "https://framerusercontent.com/images/KropwPstz21xFU5W3XKqjXuJdug.jpg",
+          url: "/images/ratuboko-sunset.jpg",
           caption: "Siluet gerbang Paduraksa kembar Ratu Boko kala senja menjemput."
         },
         {
-          url: "https://framerusercontent.com/images/QhwZ5Be3gOQWoDEKd5MQKxIvK0.jpg",
+          url: "/images/ratuboko-gate.jpg",
           caption: "Teras batu andesit Paseban dengan latar belakang lembah Prambanan."
         }
       ],
@@ -312,7 +312,7 @@ export const PORTFOLIO_DATA = {
       readTime: "5 menit baca",
       author: "Gabriel",
       date: "Edisi Arsip Arsitektur Air",
-      heroImage: "https://framerusercontent.com/images/GwPZ4qfuqEh19h3avjqp5ETMxWU.jpg",
+      heroImage: "/images/tamansari-watercastle.jpg",
       leadParagraph: "Dibangun pada pertengahan abad ke-18, Tamansari bukan hanya tempat peristirahatan keluarga kerajaan (pesanggrahan). Kompleks seluas 10 hektar ini dirancang sebagai benteng pertahanan bawah air dengan jaringan terowongan rahasia (urung-urung) yang menghubungkan Keraton dengan pesisir selatan.",
       sections: [
         {
@@ -342,11 +342,11 @@ export const PORTFOLIO_DATA = {
       ],
       photoGallery: [
         {
-          url: "https://framerusercontent.com/images/GwPZ4qfuqEh19h3avjqp5ETMxWU.jpg",
+          url: "/images/tamansari-watercastle.jpg",
           caption: "Pertemuan lima tangga melingkar di Sumur Gumuling, masjid bawah tanah Tamansari."
         },
         {
-          url: "https://framerusercontent.com/images/g5RQYfLWly658siDc2CoxLH1k.jpg",
+          url: "/images/tamansari-pool.jpg",
           caption: "Bukaan lengkung gerbang panggung pemandian Umbul Pasiraman."
         }
       ],
@@ -364,7 +364,7 @@ export const PORTFOLIO_DATA = {
       readTime: "4 menit baca",
       author: "Gabriel",
       date: "Edisi Alam & Geowisata Jogja",
-      heroImage: "https://framerusercontent.com/images/9nMQuapemBnNCEAL159FJ4mD0.jpg",
+      heroImage: "/images/breksi-cliff.jpg",
       leadParagraph: "Di perbukitan Sambirejo, Prambanan, menjulang dinding tebing batu kapur putih setinggi puluhan meter yang dinamakan Tebing Breksi. Batuan ini terbentuk dari endapan debu vulkanis erupsi dahsyat Gunung Nglanggeran dan Merapi purba jutaan tahun silam.",
       sections: [
         {
@@ -387,11 +387,11 @@ export const PORTFOLIO_DATA = {
       ],
       photoGallery: [
         {
-          url: "https://framerusercontent.com/images/9nMQuapemBnNCEAL159FJ4mD0.jpg",
+          url: "/images/breksi-cliff.jpg",
           caption: "Detail pahatan naga raksasa pada dinding batu kapur putih Tebing Breksi."
         },
         {
-          url: "https://framerusercontent.com/images/ozQUWjd8GfZxyK5qism4xDA0.jpg",
+          url: "/images/prambanan-temple.jpg",
           caption: "Deretan pohon pinus menjulang tinggi di kawasan perbukitan Mangunan Dlingo."
         }
       ],
@@ -409,7 +409,7 @@ export const PORTFOLIO_DATA = {
       readTime: "5 menit baca",
       author: "Gabriel",
       date: "Edisi Samudra & Angin Selatan",
-      heroImage: "https://framerusercontent.com/images/KropwPstz21xFU5W3XKqjXuJdug.jpg",
+      heroImage: "/images/ratuboko-sunset.jpg",
       leadParagraph: "Di ujung selatan garis lurus Sumbu Filosofi Yogyakarta, daratan tanah Jawa berakhir dan menyatu dengan deburan ombak dahsyat Samudra Hindia. Di sinilah terbentang Pantai Parangtritis dan Pantai Parangkusumo — tempat bertemunya mitos suci pendiri Mataram dengan keajaiban geologi dunia.",
       sections: [
         {
@@ -439,11 +439,11 @@ export const PORTFOLIO_DATA = {
       ],
       photoGallery: [
         {
-          url: "https://framerusercontent.com/images/KropwPstz21xFU5W3XKqjXuJdug.jpg",
+          url: "/images/ratuboko-sunset.jpg",
           caption: "Pola gelombang angin pada bukit pasir barchan Gumuk Pasir Parangkusumo."
         },
         {
-          url: "https://framerusercontent.com/images/QhwZ5Be3gOQWoDEKd5MQKxIvK0.jpg",
+          url: "/images/ratuboko-gate.jpg",
           caption: "Deburan ombak senja di Pantai Parangtritis menghadap Samudra Hindia."
         }
       ],
@@ -461,7 +461,7 @@ export const PORTFOLIO_DATA = {
       readTime: "4 menit baca",
       author: "Gabriel",
       date: "Edisi Senja & Malam Mataram",
-      heroImage: "https://framerusercontent.com/images/KropwPstz21xFU5W3XKqjXuJdug.jpg",
+      heroImage: "/images/ratuboko-sunset.jpg",
       leadParagraph: "Ada satu pepatah yang tak pernah usang: 'Jogja itu terbuat dari rindu, pulang, dan angkringan.' Ketika malam merayap turun di Titik Nol Kilometer dan lentera Malioboro mulai menyala kuning temaram, kota ini berubah menjadi ruang berbagi cerita yang paling ramah di bumi.",
       sections: [
         {
@@ -491,11 +491,11 @@ export const PORTFOLIO_DATA = {
       ],
       photoGallery: [
         {
-          url: "https://framerusercontent.com/images/KropwPstz21xFU5W3XKqjXuJdug.jpg",
+          url: "/images/ratuboko-sunset.jpg",
           caption: "Senja keemasan menerangi sudut Malioboro dan Titik Nol Yogyakarta."
         },
         {
-          url: "https://framerusercontent.com/images/QhwZ5Be3gOQWoDEKd5MQKxIvK0.jpg",
+          url: "/images/ratuboko-gate.jpg",
           caption: "Lentera jalan klasik bergaya Belanda dan siluet pohon beringin tua."
         }
       ],
@@ -512,8 +512,8 @@ export const PORTFOLIO_DATA = {
       category: "Fotografi Kampanye",
       tag: "Campaign",
       client: "Plataran Merapi & Heritage",
-      image: "https://framerusercontent.com/images/ozQUWjd8GfZxyK5qism4xDA0.jpg",
-      secondaryImage: "https://framerusercontent.com/images/9nMQuapemBnNCEAL159FJ4mD0.jpg",
+      image: "/images/prambanan-temple.jpg",
+      secondaryImage: "/images/breksi-cliff.jpg",
       description: "Eksplorasi sensorik di lereng Kaliurang dan lautan pasir vulkanik Kaliadem saat fajar. Menangkap pertemuan antara selimut kabut putih, batu andesit purba, dan busana tenun lurik modern.",
       details: "Dibidik menggunakan kamera medium format pada jam 05.00–06.15 WIB sebelum matahari naik tinggi, mempertahankan palet warna abu vulkanis dan siluet alami."
     },
@@ -524,8 +524,8 @@ export const PORTFOLIO_DATA = {
       category: "Kriya & Still Life",
       tag: "Still Life",
       client: "Perak Mataram Atelier",
-      image: "https://framerusercontent.com/images/YwplVAHOAPo5wGhRZGop2KTyA.jpg",
-      secondaryImage: "https://framerusercontent.com/images/93ebWPTWttsipG7EDWxXP67rQ.jpg",
+      image: "/images/kotagede-silver.jpg",
+      secondaryImage: "/images/heritage-craft.jpg",
       description: "Dokumentasi keindahan kerajinan perak filigri Kotagede di dalam rumah tradisional Kalang abad ke-18. Kontras bayangan gelap dan kilau logam mulia hasil tempaan tangan pengrajin turun-temurun.",
       details: "Tata cahaya tunggal diffused softbox di studio Tirtodipuran, menonjolkan tekstur halus tanpa pantulan buatan yang berlebihan."
     },
@@ -536,8 +536,8 @@ export const PORTFOLIO_DATA = {
       category: "Lanskap Editorial",
       tag: "Travel",
       client: "Manual Magazine",
-      image: "https://framerusercontent.com/images/KropwPstz21xFU5W3XKqjXuJdug.jpg",
-      secondaryImage: "https://framerusercontent.com/images/QhwZ5Be3gOQWoDEKd5MQKxIvK0.jpg",
+      image: "/images/ratuboko-sunset.jpg",
+      secondaryImage: "/images/ratuboko-gate.jpg",
       description: "Perjalanan visual menelusuri Gumuk Pasir Barchan di pesisir selatan Yogyakarta. Garis angin pada gumuk pasir pantai dan bayangan pohon cemara udang kala rembang petang.",
       details: "Seri foto 35mm film analog yang menangkap gradasi warna oranye senja Samudra Hindia dan butiran pasir keemasan."
     },
@@ -548,8 +548,8 @@ export const PORTFOLIO_DATA = {
       category: "Arsitektur Heritage",
       tag: "Interiors",
       client: "Amanjiwo Luxury Resorts",
-      image: "https://framerusercontent.com/images/GwPZ4qfuqEh19h3avjqp5ETMxWU.jpg",
-      secondaryImage: "https://framerusercontent.com/images/g5RQYfLWly658siDc2CoxLH1k.jpg",
+      image: "/images/tamansari-watercastle.jpg",
+      secondaryImage: "/images/tamansari-pool.jpg",
       description: "Kajian arsitektur lorong bawah tanah Sumur Gumuling dan kolam pemandian Umbul Pasiraman. Merekam ritme geometris lengkung bata kuno dan pantulan cahaya dari langit-langit kubah.",
       details: "Pencahayaan alami 100% tanpa lampu tambahan untuk merekam keheningan mistis dan tekstur lumut pada dinding bersejarah."
     },
@@ -560,8 +560,8 @@ export const PORTFOLIO_DATA = {
       category: "Dokumentasi Budaya",
       tag: "Editorial",
       client: "Vogue Scandinavia / Asia Special",
-      image: "https://framerusercontent.com/images/YJ33gA5Q5BJOXQu9i7oqzRb3fY.jpg",
-      secondaryImage: "https://framerusercontent.com/images/ozQUWjd8GfZxyK5qism4xDA0.jpg",
+      image: "/images/keraton-pendopo.jpg",
+      secondaryImage: "/images/prambanan-temple.jpg",
       description: "Gerak lambat dan postur meditatif penari Bedhaya Ketawang di Bangsal Kencana. Keseimbangan antara tenun prada emas, selendang sutra, dan lantai marmer peninggalan Sultan terdahulu.",
       details: "Eksklusif pencahayaan alami lilin dan sinar sore yang menerobos kisi-kisi kayu jati."
     }
