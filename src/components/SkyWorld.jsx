@@ -3797,31 +3797,46 @@ export default function SkyWorld({
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
       const k = e.key.toLowerCase();
 
-      // Prevent browser from scrolling the window with game keys
-      if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' ', 'shift'].includes(k)) {
+      // Prevent browser default scrolling with game inputs
+      if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' ', 'shift', 'control'].includes(k)) {
         e.preventDefault();
       }
 
-      // Any manual key press instantly takes manual control and cancels autopilot
-      if (['w', 's', 'a', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' ', 'e', 'c', 'q'].includes(k)) {
+      // Any flight input immediately cancels autopilot
+      if (['w', 's', 'a', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' ', 'e', 'c', 'q', 'control'].includes(k)) {
         ship.autopilotTarget = null;
-        if (ship.docked) undock();
+        // Pressing forward or Space automatically undocks
+        if (ship.docked && (k === 'w' || k === ' ' || k === 'arrowup')) {
+          undock();
+        }
       }
 
-      if (k === 'w' || k === 'arrowup') keys.w = true;
-      if (k === 's' || k === 'arrowdown') keys.s = true;
+      // Primary Throttle & Steering
+      if (k === 'w') keys.w = true;
+      if (k === 's') keys.s = true;
       if (k === 'a' || k === 'arrowleft') keys.a = true;
       if (k === 'd' || k === 'arrowright') keys.d = true;
-      if (e.key === ' ' || k === 'e') {
+
+      // Vertical Altitude (Space / ArrowUp = Ascend, Ctrl / C / Q / ArrowDown = Descend)
+      if (e.key === ' ' || k === 'arrowup') {
         e.preventDefault();
         keys.up = true;
       }
-      if (k === 'c' || k === 'q') keys.down = true;
+      if (e.key === 'Control' || k === 'c' || k === 'q' || k === 'arrowdown') {
+        keys.down = true;
+      }
+
+      // Turbo Boost
       if (e.key === 'Shift') keys.shift = true;
 
-      if (e.key === 'Enter') {
+      // Docking & Interaction (E or Enter)
+      if (e.key === 'Enter' || k === 'e') {
         if (nearestIslandRef.current && !ship.docked) {
           dockAtIsland(nearestIslandRef.current.id);
+        } else if (ship.docked) {
+          undock();
+        } else if (k === 'e' && !nearestIslandRef.current) {
+          keys.up = true; // E also ascends when airborne
         }
       }
 
@@ -3832,12 +3847,12 @@ export default function SkyWorld({
 
     const handleKeyUp = (e) => {
       const k = e.key.toLowerCase();
-      if (k === 'w' || k === 'arrowup') keys.w = false;
-      if (k === 's' || k === 'arrowdown') keys.s = false;
+      if (k === 'w') keys.w = false;
+      if (k === 's') keys.s = false;
       if (k === 'a' || k === 'arrowleft') keys.a = false;
       if (k === 'd' || k === 'arrowright') keys.d = false;
-      if (e.key === ' ' || k === 'e') keys.up = false;
-      if (k === 'c' || k === 'q') keys.down = false;
+      if (e.key === ' ' || k === 'arrowup' || k === 'e') keys.up = false;
+      if (e.key === 'Control' || k === 'c' || k === 'q' || k === 'arrowdown') keys.down = false;
       if (e.key === 'Shift') keys.shift = false;
     };
 
@@ -3872,8 +3887,8 @@ export default function SkyWorld({
       camState.lastMouseX = e.clientX;
       camState.lastMouseY = e.clientY;
 
-      camState.targetYawOff -= dx * 0.004;
-      camState.targetPitch = Math.max(0.08, Math.min(0.65, camState.targetPitch + dy * 0.003));
+      camState.targetYawOff -= dx * 0.005;
+      camState.targetPitch = Math.max(0.08, Math.min(0.85, camState.targetPitch + dy * 0.003));
     };
 
     const handlePointerUp = () => {
@@ -3948,7 +3963,7 @@ export default function SkyWorld({
     let lastTime = performance.now();
     let startTime = performance.now();
     let nightLerp = isNight ? 1 : 0;
-    let camSmoothYaw = ship.yaw;
+    let camSmoothYaw = 0.04;
     const camSmoothLook = new THREE.Vector3(ship.x, ship.y + 1.2, ship.z);
 
     const animate = () => {
@@ -4130,54 +4145,76 @@ export default function SkyWorld({
           }
           if (!dockedNow) ship.autopilotTarget = null;
         } else {
-          const desiredYaw = Math.atan2(dx, -dz);
+          const desiredYaw = Math.atan2(-dx, -dz);
           let dyaw = desiredYaw - ship.yaw;
           while (dyaw > Math.PI) dyaw -= Math.PI * 2;
           while (dyaw < -Math.PI) dyaw += Math.PI * 2;
 
-          ship.yawRate = Math.max(-1.8, Math.min(1.8, dyaw * 2.2));
+          ship.yawRate = Math.max(-1.8, Math.min(1.8, dyaw * 2.5));
           ship.yaw += ship.yawRate * delta;
 
-          const maxSpd = Math.min(1.2, dist * 0.08);
+          const maxSpd = Math.min(18.0, dist * 0.5);
           ship.speed += (maxSpd - ship.speed) * (1 - Math.exp(-2.5 * delta));
-          ship.throttle = ship.speed / 1.2;
+          ship.throttle = Math.min(1.0, ship.speed / 18.0);
         }
       } else {
-        let targetSpeed = 0;
-        if (keys.w) targetSpeed = keys.shift ? 2.2 : 1.1;
-        if (keys.s) targetSpeed = -0.4;
+        // --- SKYHOLM FLIGHT CONTROLS (EXACT BEHAVIOR AS https://skyholm.framer.website/) ---
+        const isForward = keys.w || keys.up;
+        const isBackward = keys.s || keys.down;
+        const isLeft = keys.a || keys.left;
+        const isRight = keys.d || keys.right;
+        const isBoosting = keys.shift;
 
-        ship.speed += (targetSpeed - ship.speed) * (1 - Math.exp(-2.5 * delta));
-        ship.throttle = Math.abs(ship.speed) / (keys.shift ? 2.2 : 1.1);
+        // u: forward throttle (1.0 on W, -0.6 on S for reverse/brake)
+        // d: steering direction (+1.0 turning left with A, -1.0 turning right with D)
+        const u = (isForward ? 1.0 : 0.0) - (isBackward ? 0.6 : 0.0);
+        const d = (isLeft ? 1.0 : 0.0) - (isRight ? 1.0 : 0.0);
 
-        let steer = 0;
-        if (keys.a) steer -= 1;
-        if (keys.d) steer += 1;
+        // Max speed: 18 normally, 28 on Shift boost
+        const maxForward = isBoosting ? 28.0 : 16.0;
+        const targetSpeed = u > 0 ? maxForward : (u < 0 ? -6.0 : 0.0);
 
-        ship.yawRate += (steer * 1.4 - ship.yawRate) * (1 - Math.exp(-4 * delta));
-        ship.yaw += ship.yawRate * delta;
+        // Smooth speed acceleration and coasting
+        const accelDrag = u !== 0 ? 1.3 : 0.75;
+        ship.speed += (targetSpeed - ship.speed) * (1 - Math.exp(-accelDrag * delta));
+        ship.throttle = Math.min(1.0, Math.abs(ship.speed) / (isBoosting ? 28.0 : 16.0));
 
-        ship.roll += (-ship.yawRate * 0.18 - ship.roll) * (1 - Math.exp(-5 * delta));
-        ship.pitch += ((targetSpeed > 0 ? 0.04 : 0) - ship.pitch) * (1 - Math.exp(-3 * delta));
+        // Steering Yaw Rate (A/D turns the ship)
+        const targetYawRate = d * 1.15;
+        ship.yawRate += (targetYawRate - ship.yawRate) * (1 - Math.exp(-3.5 * delta));
+
+        // Turn rate scaled by speed: responsive while moving, yet allows turning when slow
+        const turnSpeedFactor = 0.45 + Math.min(1.0, Math.abs(ship.speed) / 8.0) * 0.65;
+        ship.yaw += ship.yawRate * delta * turnSpeedFactor * 1.8;
+        while (ship.yaw > Math.PI) ship.yaw -= Math.PI * 2;
+        while (ship.yaw < -Math.PI) ship.yaw += Math.PI * 2;
+
+        // Aerodynamic banking (Rolls into turns)
+        const targetRoll = -ship.yawRate * 0.28 * Math.min(1.0, Math.abs(ship.speed) / 7.0);
+        ship.roll += (targetRoll - ship.roll) * (1 - Math.exp(-4.5 * delta));
+
+        // Pitch response to acceleration & glide
+        const targetPitch = Math.max(-0.06, Math.min(0.06, -u * 0.05));
+        ship.pitch += (targetPitch - ship.pitch) * (1 - Math.exp(-3.5 * delta));
       }
 
       let isNearBoundary = false;
 
       if (!ship.docked) {
+        // Vertical Altitude Controls (Smooth Climb & Dive)
         if (keys.up) {
-          ship.targetAltitude = Math.min(36.0, ship.targetAltitude + 10.0 * delta);
-          ship.pitch += (0.12 - ship.pitch) * (1 - Math.exp(-4 * delta));
+          ship.targetAltitude = Math.min(38.0, ship.targetAltitude + 13.5 * delta);
+          ship.pitch += (0.16 - ship.pitch) * (1 - Math.exp(-5 * delta));
         } else if (keys.down) {
-          ship.targetAltitude = Math.max(12.0, ship.targetAltitude - 10.0 * delta);
-          ship.pitch += (-0.12 - ship.pitch) * (1 - Math.exp(-4 * delta));
-        } else if (!ship.autopilotTarget) {
-          // Slow recovery towards standard cruising altitude
-          ship.targetAltitude += (17.4 - ship.targetAltitude) * 0.08 * delta;
+          ship.targetAltitude = Math.max(11.0, ship.targetAltitude - 13.5 * delta);
+          ship.pitch += (-0.16 - ship.pitch) * (1 - Math.exp(-5 * delta));
         }
 
-        ship.x += Math.sin(ship.yaw) * ship.speed * 28 * delta;
-        ship.z -= Math.cos(ship.yaw) * ship.speed * 28 * delta;
-        ship.y += (ship.targetAltitude + Math.sin(time * 1.5) * 0.25 - ship.y) * (1 - Math.exp(-3 * delta));
+        // Skyholm Velocity Integration along heading vector (-sin(yaw), -cos(yaw))
+        ship.x += -Math.sin(ship.yaw) * ship.speed * delta;
+        ship.z += -Math.cos(ship.yaw) * ship.speed * delta;
+        // Float on gentle air current cushion
+        ship.y += (ship.targetAltitude + Math.sin(time * 1.5) * 0.22 - ship.y) * (1 - Math.exp(-3.5 * delta));
 
         // -----------------------------------------------------------------
         // 1. FLIGHT BOUNDARY ENFORCEMENT ("ada pembatas nya")
@@ -4192,7 +4229,7 @@ export default function SkyWorld({
           ship.z = BOUNDARY_CENTER_Z + Math.sin(bAngle) * BOUNDARY_RADIUS;
 
           // Elastic inward redirection: steer yaw towards archipelago center
-          const inwardYaw = Math.atan2(BOUNDARY_CENTER_X - ship.x, -(BOUNDARY_CENTER_Z - ship.z));
+          const inwardYaw = Math.atan2(-(BOUNDARY_CENTER_X - ship.x), -(BOUNDARY_CENTER_Z - ship.z));
           let dyaw = inwardYaw - ship.yaw;
           while (dyaw > Math.PI) dyaw -= Math.PI * 2;
           while (dyaw < -Math.PI) dyaw += Math.PI * 2;
@@ -4207,7 +4244,7 @@ export default function SkyWorld({
           ship.x += inwardX * factor * 14.0 * delta;
           ship.z += inwardZ * factor * 14.0 * delta;
 
-          const inwardYaw = Math.atan2(BOUNDARY_CENTER_X - ship.x, -(BOUNDARY_CENTER_Z - ship.z));
+          const inwardYaw = Math.atan2(-(BOUNDARY_CENTER_X - ship.x), -(BOUNDARY_CENTER_Z - ship.z));
           let dyaw = inwardYaw - ship.yaw;
           while (dyaw > Math.PI) dyaw -= Math.PI * 2;
           while (dyaw < -Math.PI) dyaw += Math.PI * 2;
@@ -4270,7 +4307,7 @@ export default function SkyWorld({
                 ship.z = col.z + nz * minDist;
 
                 // Deflect speed if flying towards collider
-                const vX = Math.sin(ship.yaw) * ship.speed;
+                const vX = -Math.sin(ship.yaw) * ship.speed;
                 const vZ = -Math.cos(ship.yaw) * ship.speed;
                 const dot = vX * nx + vZ * nz;
                 if (dot < 0) {
@@ -4381,8 +4418,8 @@ export default function SkyWorld({
 
       if (onFlightStatsRef.current) {
         onFlightStatsRef.current({
-          speed: Math.round(Math.abs(ship.speed) * 35),
-          heading: Math.round((((ship.yaw * 180) / Math.PI) % 360 + 360) % 360),
+          speed: Math.round(Math.abs(ship.speed) * 3.2),
+          heading: Math.round((((-ship.yaw * 180) / Math.PI) % 360 + 360) % 360),
           altitude: Math.round(ship.y * 12),
           nearIsland: closestIsl ? closestIsl.title : null,
           nearIslandId: closestIsl ? closestIsl.id : null,
@@ -4393,30 +4430,36 @@ export default function SkyWorld({
         });
       }
 
-      // Camera Follow & Orbit with Game-Grade Rotational Damping
-      camState.dist += (camState.targetDist - camState.dist) * (1 - Math.exp(-5 * delta));
-      camState.yawOff += (camState.targetYawOff - camState.yawOff) * (1 - Math.exp(-6 * delta));
-      camState.pitch += (camState.targetPitch - camState.pitch) * (1 - Math.exp(-6 * delta));
+      // Smooth Camera Follow & Orbit (EXACT SKYHOLM CHASE CAMERA)
+      camState.dist += (camState.targetDist - camState.dist) * (1 - Math.exp(-5.0 * delta));
+      camState.pitch += (camState.targetPitch - camState.pitch) * (1 - Math.exp(-6.0 * delta));
+      camState.yawOff += (camState.targetYawOff - camState.yawOff) * (1 - Math.exp(-5.0 * delta));
 
-      // Auto-recenter camera behind the airship when flying forward
-      if (keys.w && !camState.isDragging) {
-        camState.targetYawOff += (0 - camState.targetYawOff) * (1 - Math.exp(-1.8 * delta));
+      // Dynamic Speed FOV (Widened FOV on Turbo Boost for speed sensation)
+      const targetFov = (keys.shift && Math.abs(ship.speed) > 18.0) ? 54 : (keys.s ? 43 : 46);
+      if (Math.abs(camera.fov - targetFov) > 0.05) {
+        camera.fov += (targetFov - camera.fov) * (1 - Math.exp(-4 * delta));
+        camera.updateProjectionMatrix();
       }
 
-      // Smooth camera yaw tracking with elastic spring lag
-      const targetYaw = ship.yaw + camState.yawOff;
-      let dyaw = targetYaw - camSmoothYaw;
-      while (dyaw > Math.PI) dyaw -= Math.PI * 2;
-      while (dyaw < -Math.PI) dyaw += Math.PI * 2;
-      camSmoothYaw += dyaw * (1 - Math.exp(-3.8 * delta));
+      // Smooth auto-recenter behind ship when flying without dragging mouse
+      if (!camState.isDragging && Math.abs(ship.speed) > 2.5) {
+        camState.targetYawOff += (0.04 - camState.targetYawOff) * (1 - Math.exp(-1.2 * delta));
+      }
 
-      const desiredCamX = ship.x - Math.sin(camSmoothYaw) * Math.cos(camState.pitch) * camState.dist;
-      const desiredCamZ = ship.z + Math.cos(camSmoothYaw) * Math.cos(camState.pitch) * camState.dist;
-      const desiredCamY = ship.y + Math.sin(camState.pitch) * camState.dist + 3.0;
+      // Camera orientation relative to ship heading:
+      const camHeading = ship.yaw + camState.yawOff;
+      const lookDirX = -Math.sin(camHeading);
+      const lookDirZ = -Math.cos(camHeading);
 
-      camera.position.x += (desiredCamX - camera.position.x) * (1 - Math.exp(-8 * delta));
-      camera.position.y += (desiredCamY - camera.position.y) * (1 - Math.exp(-8 * delta));
-      camera.position.z += (desiredCamZ - camera.position.z) * (1 - Math.exp(-8 * delta));
+      // Camera sits behind the ship along flight direction
+      const desiredCamX = ship.x - lookDirX * (camState.dist * Math.cos(camState.pitch));
+      const desiredCamZ = ship.z - lookDirZ * (camState.dist * Math.cos(camState.pitch));
+      const desiredCamY = ship.y + camState.dist * Math.sin(camState.pitch) + 3.0;
+
+      camera.position.x += (desiredCamX - camera.position.x) * (1 - Math.exp(-12.0 * delta));
+      camera.position.y += (desiredCamY - camera.position.y) * (1 - Math.exp(-12.0 * delta));
+      camera.position.z += (desiredCamZ - camera.position.z) * (1 - Math.exp(-12.0 * delta));
 
       // Subtle Camera Bump Shake on Obstacle Impact
       if (camState.camBumpShake > 0.001) {
@@ -4427,9 +4470,14 @@ export default function SkyWorld({
         camera.position.y += shakeY;
       }
 
-      camSmoothLook.x += (ship.x - camSmoothLook.x) * (1 - Math.exp(-10 * delta));
-      camSmoothLook.y += ((ship.y + 1.2) - camSmoothLook.y) * (1 - Math.exp(-10 * delta));
-      camSmoothLook.z += (ship.z - camSmoothLook.z) * (1 - Math.exp(-10 * delta));
+      // Camera look target ahead of ship
+      const lookTargetX = ship.x + lookDirX * 16.0;
+      const lookTargetZ = ship.z + lookDirZ * 16.0;
+      const lookTargetY = ship.y + 3.2;
+
+      camSmoothLook.x += (lookTargetX - camSmoothLook.x) * (1 - Math.exp(-12.0 * delta));
+      camSmoothLook.y += (lookTargetY - camSmoothLook.y) * (1 - Math.exp(-12.0 * delta));
+      camSmoothLook.z += (lookTargetZ - camSmoothLook.z) * (1 - Math.exp(-12.0 * delta));
 
       camera.lookAt(camSmoothLook);
       cloudUniforms.uCam.value.copy(camera.position);

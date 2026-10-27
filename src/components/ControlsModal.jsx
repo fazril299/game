@@ -6,15 +6,15 @@ export default function ControlsModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   const bindings = [
-    { key: 'W / S', desc: 'Akselerasi Maju & Mundur', icon: <Navigation size={14} /> },
-    { key: 'A / D', desc: 'Kemudi Belok Kiri & Kanan', icon: <span className="text-[11px] font-bold">◄ ►</span> },
-    { key: 'Spasi / E', desc: 'Membubung Naik (Ascend ke atas)', icon: <ArrowUp size={14} /> },
-    { key: 'C / Q', desc: 'Menukik Turun (Descend ke celah awan)', icon: <ArrowDown size={14} /> },
-    { key: 'Shift', desc: 'Pendorong Cepat (Turbo Boost)', icon: <span className="text-[11px] font-bold">⚡</span> },
-    { key: 'Enter', desc: 'Berlabuh di Dermaga & Baca Naskah', icon: <Anchor size={14} /> },
+    { key: 'W / S', desc: 'Akselerasi Maju & Rem Udara Pakem', icon: <Navigation size={14} /> },
+    { key: 'A / D', desc: 'Belok Kiri / Kanan & Kemiringan Sayap (Banking)', icon: <span className="text-[11px] font-bold">◄ ►</span> },
+    { key: 'Spasi', desc: 'Membubung Naik (Ascend ke atas awan)', icon: <ArrowUp size={14} /> },
+    { key: 'Ctrl / C', desc: 'Menukik Turun (Descend mendekati pulau)', icon: <ArrowDown size={14} /> },
+    { key: 'Shift', desc: 'Pendorong Cepat (Turbo Boost + Dynamic FOV)', icon: <span className="text-[11px] font-bold">⚡</span> },
+    { key: 'E / Enter', desc: 'Berlabuh di Dermaga / Lepas Jangkar', icon: <Anchor size={14} /> },
     { key: 'Esc', desc: 'Lepas Jangkar / Tutup Naskah', icon: <span className="text-[11px] font-bold">✕</span> },
     { key: 'Klik Awan', desc: 'Terbang Autopilot ke titik tujuan', icon: <MousePointer size={14} /> },
-    { key: 'Drag Mouse', desc: 'Putar Sudut Kamera 360° (Orbit)', icon: <Move size={14} /> },
+    { key: 'Drag Mouse', desc: 'Putar Sudut Kamera Bebas 360° (Orbit)', icon: <Move size={14} /> },
     { key: 'Scroll', desc: 'Perbesar / Perkecil Jarak Pandang', icon: <ZoomIn size={14} /> },
   ];
 
