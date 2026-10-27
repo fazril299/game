@@ -3782,14 +3782,12 @@ export default function SkyWorld({
       camBumpShake: 0
     };
 
-    // Keyboard controls state
+    // Keyboard controls state (EXACT 7 CONTROLS AS SKYHOLM FRAMER)
     const keys = {
       w: false,
       s: false,
       a: false,
       d: false,
-      up: false,
-      down: false,
       shift: false
     };
 
@@ -3797,49 +3795,39 @@ export default function SkyWorld({
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
       const k = e.key.toLowerCase();
 
-      // Prevent browser default scrolling with game inputs
-      if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' ', 'shift', 'control'].includes(k)) {
+      // Prevent browser default scrolling with flight inputs
+      if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'shift'].includes(k)) {
         e.preventDefault();
       }
 
-      // Any flight input immediately cancels autopilot
-      if (['w', 's', 'a', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' ', 'e', 'c', 'q', 'control'].includes(k)) {
+      // Any steering or throttle input cancels autopilot
+      if (['w', 's', 'a', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(k)) {
         ship.autopilotTarget = null;
-        // Pressing forward or Space automatically undocks
-        if (ship.docked && (k === 'w' || k === ' ' || k === 'arrowup')) {
+        if (ship.docked && (k === 'w' || k === 'arrowup')) {
           undock();
         }
       }
 
-      // Primary Throttle & Steering
-      if (k === 'w') keys.w = true;
-      if (k === 's') keys.s = true;
+      // Forward (W or ArrowUp)
+      if (k === 'w' || k === 'arrowup') keys.w = true;
+      // Backward / Brake (S or ArrowDown)
+      if (k === 's' || k === 'arrowdown') keys.s = true;
+      // Steer Left (A or ArrowLeft)
       if (k === 'a' || k === 'arrowleft') keys.a = true;
+      // Steer Right (D or ArrowRight)
       if (k === 'd' || k === 'arrowright') keys.d = true;
 
-      // Vertical Altitude (Space / ArrowUp = Ascend, Ctrl / C / Q / ArrowDown = Descend)
-      if (e.key === ' ' || k === 'arrowup') {
-        e.preventDefault();
-        keys.up = true;
-      }
-      if (e.key === 'Control' || k === 'c' || k === 'q' || k === 'arrowdown') {
-        keys.down = true;
-      }
-
-      // Turbo Boost
+      // Full throttle (Shift)
       if (e.key === 'Shift') keys.shift = true;
 
-      // Docking & Interaction (E or Enter)
-      if (e.key === 'Enter' || k === 'e') {
+      // Moor at the island (Enter)
+      if (e.key === 'Enter') {
         if (nearestIslandRef.current && !ship.docked) {
           dockAtIsland(nearestIslandRef.current.id);
-        } else if (ship.docked) {
-          undock();
-        } else if (k === 'e' && !nearestIslandRef.current) {
-          keys.up = true; // E also ascends when airborne
         }
       }
 
+      // Cast off (Escape)
       if (e.key === 'Escape') {
         if (ship.docked) undock();
       }
@@ -3847,12 +3835,10 @@ export default function SkyWorld({
 
     const handleKeyUp = (e) => {
       const k = e.key.toLowerCase();
-      if (k === 'w') keys.w = false;
-      if (k === 's') keys.s = false;
+      if (k === 'w' || k === 'arrowup') keys.w = false;
+      if (k === 's' || k === 'arrowdown') keys.s = false;
       if (k === 'a' || k === 'arrowleft') keys.a = false;
       if (k === 'd' || k === 'arrowright') keys.d = false;
-      if (e.key === ' ' || k === 'arrowup' || k === 'e') keys.up = false;
-      if (e.key === 'Control' || k === 'c' || k === 'q' || k === 'arrowdown') keys.down = false;
       if (e.key === 'Shift') keys.shift = false;
     };
 
@@ -4159,10 +4145,10 @@ export default function SkyWorld({
         }
       } else {
         // --- SKYHOLM FLIGHT CONTROLS (EXACT BEHAVIOR AS https://skyholm.framer.website/) ---
-        const isForward = keys.w || keys.up;
-        const isBackward = keys.s || keys.down;
-        const isLeft = keys.a || keys.left;
-        const isRight = keys.d || keys.right;
+        const isForward = keys.w;
+        const isBackward = keys.s;
+        const isLeft = keys.a;
+        const isRight = keys.d;
         const isBoosting = keys.shift;
 
         // u: forward throttle (1.0 on W, -0.6 on S for reverse/brake)
@@ -4170,7 +4156,7 @@ export default function SkyWorld({
         const u = (isForward ? 1.0 : 0.0) - (isBackward ? 0.6 : 0.0);
         const d = (isLeft ? 1.0 : 0.0) - (isRight ? 1.0 : 0.0);
 
-        // Max speed: 18 normally, 28 on Shift boost
+        // Max speed: 16 normally, 28 on Shift boost
         const maxForward = isBoosting ? 28.0 : 16.0;
         const targetSpeed = u > 0 ? maxForward : (u < 0 ? -6.0 : 0.0);
 
@@ -4201,20 +4187,11 @@ export default function SkyWorld({
       let isNearBoundary = false;
 
       if (!ship.docked) {
-        // Vertical Altitude Controls (Smooth Climb & Dive)
-        if (keys.up) {
-          ship.targetAltitude = Math.min(38.0, ship.targetAltitude + 13.5 * delta);
-          ship.pitch += (0.16 - ship.pitch) * (1 - Math.exp(-5 * delta));
-        } else if (keys.down) {
-          ship.targetAltitude = Math.max(11.0, ship.targetAltitude - 13.5 * delta);
-          ship.pitch += (-0.16 - ship.pitch) * (1 - Math.exp(-5 * delta));
-        }
-
         // Skyholm Velocity Integration along heading vector (-sin(yaw), -cos(yaw))
         ship.x += -Math.sin(ship.yaw) * ship.speed * delta;
         ship.z += -Math.cos(ship.yaw) * ship.speed * delta;
-        // Float on gentle air current cushion
-        ship.y += (ship.targetAltitude + Math.sin(time * 1.5) * 0.22 - ship.y) * (1 - Math.exp(-3.5 * delta));
+        // Float at stable cruising altitude with gentle air wave bobbing
+        ship.y += (17.4 + Math.sin(time * 1.5) * 0.25 - ship.y) * (1 - Math.exp(-3.5 * delta));
 
         // -----------------------------------------------------------------
         // 1. FLIGHT BOUNDARY ENFORCEMENT ("ada pembatas nya")
