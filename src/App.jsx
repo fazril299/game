@@ -84,7 +84,8 @@ export default function App() {
         onToggleNight={handleToggleNight}
         isSoundOn={isSoundOn}
         onToggleSound={handleToggleSound}
-        onOpenControls={() => setShowControls(true)}
+        isControlsOpen={showControls}
+        onOpenControls={() => setShowControls((prev) => !prev)}
         dockedIsland={dockedIsland}
         onSelectIsland={handleSelectIsland}
         onOpenSignal={() => handleSelectIsland('contact')}

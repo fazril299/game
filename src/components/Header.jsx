@@ -6,6 +6,7 @@ export default function Header({
   onToggleNight,
   isSoundOn,
   onToggleSound,
+  isControlsOpen,
   onOpenControls,
   dockedIsland,
   onSelectIsland,
@@ -72,9 +73,14 @@ export default function Header({
         {/* Keyboard Controls */}
         <button
           onClick={onOpenControls}
+          data-controls-trigger="true"
           aria-label="Flight Controls Help"
           title="Flight Controls Help"
-          className="w-11 h-11 rounded-full bg-white/95 border border-black/5 shadow-luxury flex items-center justify-center text-slate-800 hover:scale-108 transition-transform"
+          className={`w-11 h-11 rounded-full bg-white/95 dark:bg-slate-900/95 shadow-luxury flex items-center justify-center text-slate-800 dark:text-white hover:scale-108 transition-all ${
+            isControlsOpen
+              ? 'ring-2 ring-[#FF4B1F] border border-[#FF4B1F]'
+              : 'border border-black/5 dark:border-white/10'
+          }`}
         >
           <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
             <rect x="2.5" y="6" width="19" height="12" rx="2.5" />
